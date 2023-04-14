@@ -24,11 +24,11 @@ class BannerManager(models.Manager):
 
 class Banner(models.Model):
     """Баннеры магазина"""
-    image = models.ImageField(upload_to='banners/')
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    is_active = models.BooleanField(default=False)
-    link = models.URLField()
+    image = models.ImageField(upload_to='banners/', verbose_name=_("изображение"))
+    title = models.CharField(max_length=100, verbose_name=_("заголовок"))
+    description = models.TextField(verbose_name=_("описание"))
+    is_active = models.BooleanField(default=False, verbose_name=_("баннер активен"))
+    link = models.URLField(verbose_name=_("ссылка"))
     objects = BannerManager()
 
     def __str__(self):

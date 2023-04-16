@@ -1,6 +1,5 @@
 from django.db import models
-from products.models import *
-from shops.models import *
+from shops.models import Offer
 from users.models import User
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime
@@ -37,8 +36,11 @@ class Order(models.Model):
     payment_date = models.DateTimeField(null=True, blank=True, verbose_name=_('дата оплаты'))
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, verbose_name=_('способ доставки'))
     delivery_adress = models.CharField(max_length=100, verbose_name=_('адрес доставки'))
+    offer = models.ManyToManyField(Offer, through='OrderItem')
 
     class Meta:
+        verbose_name = _('заказ')
+        verbose_name_plural = _('заказы')
         ordering = ('-created',)
 
     def __str__(self):
@@ -56,13 +58,16 @@ class Order(models.Model):
 class OrderItem(models.Model):
     """Элемент заказа."""
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name=_('заказ'), related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name=_('продукт'))
+    offer = models.ForeignKey(Offer, on_delete=models.CASCADE, verbose_name=_('предложение'))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_('количество'))
     date_added = models.DateTimeField(auto_now_add=True, verbose_name=_('дата добавления'))
+
+    class Meta:
+        verbose_name = _('позиция заказа')
+        verbose_name_plural = _('позиции заказа')
 
     def __str__(self):
         return f'{self.id}'
 
     def get_cost(self):
-        offer = Offer.objects.get(product=self.product)
-        return offer.price * self.quantity
+        return self.offer.price * self.quantity

@@ -7,7 +7,7 @@ class CartTestCase(TestCase):
     def setUp(self):
         self.property1 = Property.objects.create(name='Property 1')
         self.category = Category.objects.create(name='Category 1', description="Description 1")
-        self.product = Product.objects.create(name='Product 1', category=self.category, )
+        self.product = Product.objects.create(name='Product 1', category=self.category)
         self.productproperty = ProductProperty.objects.create(product=self.product, property=self.property1, value=1)
         self.product.property.add(self.property1)
         self.shop = Shop.objects.create(name='Shop 1')

@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.utils import timezone
 from cart.models import *
+from shops.models import Offer, Shop
+from products.models import Product, ProductProperty, Property, Category
 
 
 class OrderModelTest(TestCase):
@@ -16,7 +18,7 @@ class OrderModelTest(TestCase):
         self.shop.products.add(self.product)
         self.offer = Offer.objects.create(shop=self.shop, product=self.product, price=90)
         self.order = Order.objects.create(user=self.user, status='created', delivery=self.delivery, delivery_adress='Novgorod')
-        self.order_item = OrderItem.objects.create(order=self.order, product=self.product, quantity=2)
+        self.order_item = OrderItem.objects.create(order=self.order, offer=self.offer, quantity=2)
 
     def test_order_str_method(self):
         expected = f'Order {self.order.id}'

@@ -13,9 +13,9 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'product', 'quantity', 'get_cost')
+    list_display = ('id', 'order', 'offer', 'quantity', 'get_cost')
     list_filter = ('order__status', 'date_added')
-    search_fields = ('product__name',)
+    search_fields = ('offer__product',)
 
 
 admin.site.register(Delivery, DeliveryAdmin)

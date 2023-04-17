@@ -12,7 +12,6 @@ class Delivery(models.Model):
         ('Express Delivery', 'Экспресс-доставка'),
     )
     delivery_option = models.CharField(max_length=20, choices=DELIVERY_OPTIONS, verbose_name=_('способ доставки'))
-    express_delivery_fee = models.PositiveIntegerField(default=500, verbose_name=_('плата за экспресс доставку'))
     order_total_for_free_delivery = models.PositiveIntegerField(default=2000, verbose_name=_('минимальная стоимость заказа для бесплатной доставки'))
     delivery_fee = models.PositiveIntegerField(default=200, verbose_name=_('стоимость доставки'))
 

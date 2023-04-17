@@ -13,12 +13,34 @@ class Cart(object):
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
+        self.delivery = None
+        self.delivery_fee = Decimal('0')
 
-    def add(self, product, quantity=1, update_quantity=False):
+    def add_delivery(self, delivery):
+        """
+        Добавить информацию о доставке в корзину.
+        """
+        self.delivery = delivery
+        self.save()
+
+    def calculate_shipping(self):
+        """
+        Подсчет стоимости доставки и общей стоимости корзины.
+        """
+        if not self.delivery:
+            return Decimal('0')
+        if self.get_total_price() >= self.delivery.order_total_for_free_delivery:
+            self.delivery_fee = Decimal('0')
+        elif self.delivery.delivery_option == 'Express Delivery':
+            self.delivery_fee = Decimal(self.delivery.express_delivery_fee)
+        else:
+            self.delivery_fee = Decimal(self.delivery.delivery_fee)
+        return self.delivery_fee
+
+    def add(self, offer, quantity=1, update_quantity=False):
         """
         Добавить продукт в корзину или обновить его количество.
         """
-        offer = Offer.objects.filter(product=product).first()
         if not offer:
             return
         product_id = str(offer.id)
@@ -36,13 +58,13 @@ class Cart(object):
         Сохранение изменений корзины.
         """
         self.session[settings.CART_SESSION_ID] = self.cart
+        self.session[settings.DELIVERY_SESSION_ID] = self.delivery.id if self.delivery else None
         self.session.modified = True
 
-    def remove(self, product):
+    def remove(self, offer):
         """
         Удаление товара из корзины.
         """
-        offer = Offer.objects.filter(product=product).first()
         if not offer:
             return
         product_id = str(offer.id)

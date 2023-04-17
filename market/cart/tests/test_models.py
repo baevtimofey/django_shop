@@ -1,31 +1,35 @@
 from django.test import TestCase
 from django.utils import timezone
-from cart.models import *
+from cart.models import Delivery, Order, OrderItem
+from users.models import User
 from shops.models import Offer, Shop
 from products.models import Product, ProductProperty, Property, Category
 
 
 class OrderModelTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(username='ivan', email='ivan@mail.ru', password='Password123')
-        self.delivery = Delivery.objects.create(delivery_option='Delivery', express_delivery_fee=500, order_total_for_free_delivery=2000, delivery_fee=200)
-        self.property = Property.objects.create(name='Property 1',)
-        self.category = Category.objects.create(name='Category 1', description="Description 1")
-        self.product = Product.objects.create(name='Product 1', category=self.category,)
-        self.product.property.add(self.property)
-        self.productproperty = ProductProperty.objects.create(product=self.product, property=self.property, value=1)
-        self.shop = Shop.objects.create(name='Shop 1')
-        self.shop.products.add(self.product)
-        self.offer = Offer.objects.create(shop=self.shop, product=self.product, price=90)
-        self.order = Order.objects.create(user=self.user, status='created', delivery=self.delivery, delivery_adress='Novgorod')
-        self.order_item = OrderItem.objects.create(order=self.order, offer=self.offer, quantity=2)
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create(username='ivan', email='ivan@mail.ru', password='Password123')
+        cls.delivery = Delivery.objects.create(delivery_option='Delivery', order_total_for_free_delivery=2000,
+                                               delivery_fee=200)
+        cls.property = Property.objects.create(name='Property 1')
+        cls.category = Category.objects.create(name='Category 1', description="Description 1")
+        cls.product = Product.objects.create(name='Product 1', category=cls.category)
+        cls.product.property.add(cls.property)
+        ProductProperty.objects.create(product=cls.product, property=cls.property, value=1)
+        cls.shop = Shop.objects.create(name='Shop 1')
+        cls.shop.products.add(cls.product)
+        cls.offer = Offer.objects.create(shop=cls.shop, product=cls.product, price=90)
+        cls.order = Order.objects.create(user=cls.user, status='created', delivery=cls.delivery,
+                                         delivery_adress='Novgorod')
+        cls.order_item = OrderItem.objects.create(order=cls.order, offer=cls.offer, quantity=2)
 
     def test_order_str_method(self):
         expected = f'Order {self.order.id}'
         self.assertEqual(str(self.order), expected)
 
     def test_order_get_total_cost_method(self):
-        expected = self.offer.price * self.order_item.quantity
+        expected = self.offer.price * self.order.items.get().quantity
         self.assertEqual(self.order.get_total_cost(), expected)
 
     def test_order_save_method(self):
@@ -35,5 +39,5 @@ class OrderModelTest(TestCase):
         self.assertEqual(self.order.payment_date.date(), now.date())
 
     def test_order_item_str_method(self):
-        expected = f'{self.order_item.id}'
-        self.assertEqual(str(self.order_item), expected)
+        expected = f'{self.order.items.get().id}'
+        self.assertEqual(str(self.order.items.get()), expected)

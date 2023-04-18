@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "shops",
     "users",
     "mptt",
+    "django_mptt_admin",
     "cart",
 
 ]
@@ -140,6 +141,13 @@ INTERNAL_IPS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'users.User'
+
+FIXTURE_DIRS = [
+    BASE_DIR/'fixtures',
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'
 
 CART_SESSION_ID = 'cart'
 DELIVERY_SESSION_ID = 'delivery_id'

@@ -142,3 +142,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'users.User'
 
 CART_SESSION_ID = 'cart'
+DELIVERY_SESSION_ID = 'delivery_id'

@@ -59,7 +59,10 @@ class Cart(object):
         """
         self.session[settings.CART_SESSION_ID] = self.cart
         self.session[settings.DELIVERY_SESSION_ID] = self.delivery.id if self.delivery else None
-        self.session.modified = True
+        if 'modified' not in self.session:
+            self.session['modified'] = True
+        else:
+            self.session.modified = True
 
     def remove(self, offer):
         """

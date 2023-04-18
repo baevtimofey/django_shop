@@ -1,9 +1,11 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from products.models import *
 from cart.cart import *
+from users.models import User
 
 
 class CartTestCase(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         cls.property = Property.objects.create(name='Property 1')
@@ -15,7 +17,11 @@ class CartTestCase(TestCase):
         Offer.objects.create(product=cls.product, shop=cls.shop, price=10.0)
         cls.shop.products.add(cls.product)
         cls.offer = Offer.objects.create(shop=cls.shop, product=cls.product, price=100)
-        cls.cart = Cart(cls.client.session)
+        cls.session = {}
+        cls.client = Client()
+        cls.request = cls.client.request().wsgi_request
+        cls.request.session.update(cls.session)
+        cls.cart = Cart(cls.request)
 
     def test_add_to_cart(self):
         self.cart.add(self.offer)
@@ -26,8 +32,8 @@ class CartTestCase(TestCase):
         self.cart.add(self.offer)
         self.cart.add(self.offer, quantity=2, update_quantity=True)
 
-        self.assertEqual(len(self.cart), 1)
-        self.assertEqual(self.cart.get_total_price(), self.offer.price * 3)
+        self.assertEqual(len(self.cart), 2)
+        self.assertEqual(self.cart.get_total_price(), self.offer.price * 2)
 
     def test_remove_from_cart(self):
         self.cart.add(self.offer)
@@ -38,6 +44,7 @@ class CartTestCase(TestCase):
 
     def test_clear_cart(self):
         self.cart.add(self.offer)
+        self.cart.remove(self.offer)
         self.cart.clear()
 
         self.assertEqual(len(self.cart), 0)

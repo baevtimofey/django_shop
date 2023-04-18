@@ -12,6 +12,7 @@ class CartTestCase(TestCase):
         ProductProperty.objects.create(product=cls.product, property=cls.property, value=1)
         cls.product.property.add(cls.property)
         cls.shop = Shop.objects.create(name='Shop 1')
+        Offer.objects.create(product=cls.product, shop=cls.shop, price=10.0)
         cls.shop.products.add(cls.product)
         cls.offer = Offer.objects.create(shop=cls.shop, product=cls.product, price=100)
         cls.cart = Cart(cls.client.session)

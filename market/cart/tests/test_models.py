@@ -18,6 +18,7 @@ class OrderModelTest(TestCase):
         cls.product.property.add(cls.property)
         ProductProperty.objects.create(product=cls.product, property=cls.property, value=1)
         cls.shop = Shop.objects.create(name='Shop 1')
+        Offer.objects.create(product=cls.product, shop=cls.shop, price=10.0)
         cls.shop.products.add(cls.product)
         cls.offer = Offer.objects.create(shop=cls.shop, product=cls.product, price=90)
         cls.order = Order.objects.create(user=cls.user, status='created', delivery=cls.delivery,

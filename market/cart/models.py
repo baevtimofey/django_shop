@@ -12,7 +12,9 @@ class Delivery(models.Model):
         ('Express Delivery', 'Экспресс-доставка'),
     )
     delivery_option = models.CharField(max_length=20, choices=DELIVERY_OPTIONS, verbose_name=_('способ доставки'))
-    order_total_for_free_delivery = models.PositiveIntegerField(default=2000, verbose_name=_('минимальная стоимость заказа для бесплатной доставки'))
+    order_total_for_free_delivery = models.PositiveIntegerField(default=2000, verbose_name=_('минимальная стоимость '
+                                                                                             'заказа для бесплатной '
+                                                                                             'доставки'))
     delivery_fee = models.PositiveIntegerField(default=200, verbose_name=_('стоимость доставки'))
 
     def __str__(self):
@@ -34,8 +36,8 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='created', verbose_name=_('статус'))
     payment_date = models.DateTimeField(null=True, blank=True, verbose_name=_('дата оплаты'))
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, verbose_name=_('способ доставки'))
-    delivery_adress = models.CharField(max_length=100, verbose_name=_('адрес доставки'))
-    offer = models.ManyToManyField(Offer, through='OrderItem')
+    delivery_address = models.CharField(max_length=100, verbose_name=_('адрес доставки'))
+    offer = models.ManyToManyField(Offer, through='OrderItem', verbose_name=_('предложение'))
 
     class Meta:
         verbose_name = _('заказ')

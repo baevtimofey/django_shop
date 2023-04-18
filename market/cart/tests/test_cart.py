@@ -1,11 +1,13 @@
+from decimal import Decimal
+
 from django.test import TestCase, Client
-from products.models import *
-from cart.cart import *
-from users.models import User
+from products.models import Product, Property, ProductProperty, Category
+from shops.models import Shop, Offer
+from cart.cart import Cart
 
 
 class CartTestCase(TestCase):
-
+    """Класс теста корзины пользователя"""
     @classmethod
     def setUpTestData(cls):
         cls.property = Property.objects.create(name='Property 1')

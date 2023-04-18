@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Delivery, Order, OrderItem
+from cart.models import Delivery, Order, OrderItem
 
 
 class DeliveryAdmin(admin.ModelAdmin):
@@ -12,10 +12,11 @@ class OrderItemInline(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'created', 'updated', 'status', 'payment_date', 'delivery', 'delivery_adress', 'get_total_cost')
+    list_display = ('id', 'user', 'created', 'updated', 'status', 'payment_date',
+                    'delivery', 'delivery_address', 'get_total_cost')
     list_filter = ('status', 'created', 'updated')
     inlines = [OrderItemInline]
-    search_fields = ('user__username', 'delivery_adress')
+    search_fields = ('user__username', 'delivery_address')
 
 
 class OrderItemAdmin(admin.ModelAdmin):

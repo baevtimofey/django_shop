@@ -7,6 +7,7 @@ from products.models import Product, ProductProperty, Property, Category
 
 
 class OrderModelTest(TestCase):
+    """Класс теста моделей заказа и его позиций"""
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create(username='ivan', email='ivan@mail.ru', password='Password123')

@@ -1,7 +1,12 @@
+import os
+
+from django.db.models import Min, Count
+from django.shortcuts import get_list_or_404
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from products.models import Category
+from config.settings import FIXTURE_DIRS
+from products.models import Category, Product
 from shops.models import Offer
 
 
@@ -52,3 +57,26 @@ class ProductsByCategoryViewTest(TestCase):
 
     def test_products_by_category_count_is_correct(self):
         self.assertTrue(len(self.response.context['offers']) == self.offers.count())
+
+
+class ProductDetailViewTest(TestCase):
+    """ Тестирование представления для отображения детальной страницы продукта """
+    fixtures = os.listdir(*FIXTURE_DIRS)
+
+    def setUp(self):
+        self.client = Client()
+        self.product = Product.objects.annotate(
+            min_price=Min('offers__price')).annotate(num_reviews=Count('offers__reviews')).prefetch_related(
+            'product_properties', 'product_images', 'offers', 'offers__reviews').get(id=6)
+        self.response = self.client.get(self.product.get_absolute_url())
+
+    def test_view_returns_correct_HTTP_status(self):
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_view_renders_desired_template(self):
+        self.assertTemplateUsed(self.response, "products/product.html")
+
+    def test_context_is_correct(self):
+        self.assertEqual(self.response.context['default_alt'], 'Изображение продукта')
+        self.assertEqual(self.response.context['categories'], get_list_or_404(Category))
+        self.assertEqual(self.response.context['product'], self.product)

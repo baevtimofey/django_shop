@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django_mptt_admin.admin import DjangoMpttAdmin
-from products.models import Category, Product, ProductImage, ProductProperty, Property, ProductTags
+from products.models import Category, Product, ProductImage, ProductProperty, Property, ProductTag
 
 
 class CategoryAdmin(DjangoMpttAdmin):
@@ -29,7 +29,7 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductPropertyInline, ImageInline]
 
 
-class ProductTagsAdmin(admin.ModelAdmin):
+class ProductTagAdmin(admin.ModelAdmin):
     """Регистрация модели ProductTag в админке"""
     list_display = ['tag_list']
 
@@ -44,4 +44,4 @@ class ProductTagsAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Property, PropertyAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(ProductTags, ProductTagsAdmin)
+admin.site.register(ProductTag, ProductTagAdmin)

@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from products.models import Product, Property, ProductProperty, Category, ProductTags
+from products.models import Product, Property, ProductProperty, Category, ProductTag
 
 
 class ProductModelTest(TestCase):
@@ -144,13 +144,13 @@ class CategoryModelTest(TestCase):
         self.assertEqual(name_category_parent, category.name)
 
 
-class ProductTagsModelTest(TestCase):
-    """Класс тестов модели ProductTags"""
+class ProductTagModelTest(TestCase):
+    """Класс тестов модели ProductTag"""
 
     @classmethod
     def setUpTestData(cls):
         cls.test_tags = 'test_tag_1', 'test_tag_2', 'test_tag_3'
-        cls.tags = ProductTags.objects.create()
+        cls.tags = ProductTag.objects.create()
         cls.tags.tags.add(*cls.test_tags)
 
     def test_tags_names(self):

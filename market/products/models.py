@@ -29,7 +29,7 @@ class Product(SoftDeleteModel):
     description = models.TextField(max_length=2048, blank=True, verbose_name=_('описание'))
     created = models.DateTimeField(auto_now_add=True, verbose_name=_('создан'))
     updated = models.DateTimeField(auto_now=True, verbose_name=_('обновлён'))
-    tags = models.ManyToManyField('ProductTags', blank=True, related_name='products', verbose_name=_("теги"))
+    tags = models.ManyToManyField('ProductTag', blank=True, related_name='products', verbose_name=_("теги"))
 
     class Meta:
         verbose_name = _('продукт')
@@ -111,7 +111,7 @@ class Category(SoftDeleteModel, MPTTModel):
         return self.name
 
 
-class ProductTags(models.Model):
+class ProductTag(models.Model):
     tags = TaggableManager(verbose_name=_('теги'), help_text=_('Список тегов, разделенных запятыми.'))
 
     class Meta:

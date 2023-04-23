@@ -1,5 +1,5 @@
 from django.db.models import Min, Count
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_list_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
@@ -39,12 +39,14 @@ class ProductDetailView(generic.DetailView):
     template_name = 'products/product.html'
     context_object_name = 'product'
 
+    def get_queryset(self):
+        queryset = Product.objects.annotate(
+            min_price=Min('offers__price')).annotate(num_reviews=Count('offers__reviews')).prefetch_related(
+            'product_properties', 'product_images', 'offers', 'offers__reviews')
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = get_object_or_404(Product.objects.annotate(
-            min_price=Min('offers__price')).annotate(num_reviews=Count('offers__reviews')).prefetch_related(
-            'product_properties', 'product_images', 'offers', 'offers__reviews'), pk=kwargs['object'].pk
-        )
         context['default_alt'] = _('Изображение продукта')
         context['categories'] = get_list_or_404(Category)
         return context

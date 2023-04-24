@@ -35,7 +35,6 @@ class ProductsByCategoryView(generic.ListView):
 
 class ProductDetailView(generic.DetailView):
     """ Представление для отображения детальной страницы продукта """
-    model = Product
     template_name = 'products/product.html'
     context_object_name = 'product'
 

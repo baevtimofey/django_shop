@@ -13,29 +13,45 @@ class Cart:
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
-        self.delivery = None
-        self.delivery_fee = Decimal('0')
 
-    def add_delivery(self, delivery):
+    def add_user_data(self, form):
         """
-        Добавить информацию о доставке в корзину.
+        Добавить данные пользователя в корзину.
         """
-        self.delivery = delivery
+        self.session['user_data'] = form.cleaned_data
         self.save()
 
-    def calculate_shipping(self):
+    def add_shipping_data(self, form):
         """
-        Подсчет стоимости доставки и общей стоимости корзины.
+        Добавить данные о доставке в корзину.
         """
-        if not self.delivery:
-            return Decimal('0')
-        if self.get_total_price() >= self.delivery.order_total_for_free_delivery:
-            self.delivery_fee = Decimal('0')
-        elif self.delivery.delivery_option == 'Express Delivery':
-            self.delivery_fee = Decimal(self.delivery.express_delivery_fee)
-        else:
-            self.delivery_fee = Decimal(self.delivery.delivery_fee)
-        return self.delivery_fee
+        self.session['shipping_data'] = form.cleaned_data
+        self.save()
+
+    def add_payment_data(self, form):
+        """
+        Добавить данные об оплате в корзину.
+        """
+        self.session['payment_data'] = form.cleaned_data
+        self.save()
+
+    def get_user_data(self):
+        """
+        Получить данные пользователя из корзины.
+        """
+        return self.session.get('user_data')
+
+    def get_shipping_data(self):
+        """
+        Получить данные о доставке из корзины.
+        """
+        return self.session.get('shipping_data')
+
+    def get_payment_data(self):
+        """
+        Получить данные об оплате из корзины.
+        """
+        return self.session.get('payment_data')
 
     def add(self, offer, quantity=1, update_quantity=False):
         """
@@ -58,7 +74,6 @@ class Cart:
         Сохранение изменений корзины.
         """
         self.session[settings.CART_SESSION_ID] = self.cart
-        self.session[settings.DELIVERY_SESSION_ID] = self.delivery.id if self.delivery else None
         if 'modified' not in self.session:
             self.session['modified'] = True
         else:

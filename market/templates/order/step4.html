@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post">
+    <h1>Step 4: Review Your Order</h1>
+    <label for="full_name">Full name:</label>
+    <input type="text" id="full_name" name="full_name" value="{{ user_data.full_name }}"/>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{ user_data.email }}"/>
+
+    <label for="phone">Phone:</label>
+    <input type="tel" id="phone" name="phone" value="{{ user_data.phone_number }}"/>
+
+    <label for="delivery_option">Delivery option:</label>
+   <input type="text" id="delivery_option" name="delivery_option" value="{{ shipping_data.delivery_option }}"/>
+
+    <label for="delivery_address">Delivery address:</label>
+    <input type="text" id="delivery_address" name="delivery_address" value="{{ shipping_data.delivery_address }}"/>
+
+    <label for="delivery_city">Delivery city:</label>
+    <input type="text" id="delivery_city" name="delivery_city" value="{{ shipping_data.delivery_city }}"/>
+
+    <label for="payment_option">Payment option:</label>
+   <input type="text" id="payment_option" name="payment_option" value="{{ payment_data.payment_option }}"/>
+
+    <label>Products:</label>
+    <ul>
+    {% for item in order_items %}
+            {% with product=item.offer.product %}
+                <div>Товар {{ product.name }}</div>
+                <div>Кол-во {{ item.quantity }}</div>
+                <div>Стоимость {{ item.price }}</div>
+            {% endwith %}
+    {% endfor %}
+    <div>Итого: {{ order_items.get_total_price }}</div>
+    </ul>
+    {{ form.as_p }}
+    {% csrf_token %}
+  <button type="submit">Next</button>
+</form>
+
+
+
+</body>
+</html>

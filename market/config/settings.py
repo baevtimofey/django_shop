@@ -56,10 +56,9 @@ INSTALLED_APPS = [
     "users",
     "reviews",
     "cart",
-    "account"
+    "account",
     "order",
-    "taggit",
-    "django_jinja",
+
 ]
 
 SITE_ID = 1
@@ -95,6 +94,8 @@ TEMPLATES = [
             "context_processors": [
                 "context_processors.categories_context.categories",
                 "context_processors.properties_context.properties",
+                "context_processors.cart_context.cart",
+                "context_processors.banners_context.active_banners",
                 "django.contrib.messages.context_processors.messages",
             ],
 
